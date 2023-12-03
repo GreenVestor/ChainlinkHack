@@ -65,7 +65,7 @@ const Home = () => {
                 <p className="pb-4">Total Investment Needed: 250,000 Naira</p>
                 <Link
                   className="text-black bg-emerald-300 p-1.5 rounded-md"
-                  href="#"
+                  href="projectDetails/solar"
                 >
                   View Project
                 </Link>
@@ -89,7 +89,7 @@ const Home = () => {
                 <p className="pb-4">Total Investment Needed: 1,250,000 Naira</p>
                 <Link
                   className="text-black bg-emerald-300 p-1.5 rounded-md"
-                  href="#"
+                  href="projectDetails/green"
                 >
                   View Project
                 </Link>
