@@ -1,0 +1,18 @@
+{
+  "posts": [
+    {
+      "id": 1,
+      "title": "Solar Harvest Energy Park",
+      "content": "At Solar Harvest Energy Park, we're dedicated to revolutionizing energy generation and combine climate change through renewable technologies",
+      "image": "/homePosts/solar.jpg",
+      "pricing": "250,000 Naira"
+    },
+    {
+      "id": 2,
+      "title": "Green Tech Urban Farm Initiative",
+      "content": "Our Project is dedicated to creating technologically advanced vertical farms that produce fresh, nutritious products while minimizing environmental effects",
+      "image": "/homePosts/greentech.jpg",
+      "pricing": "1,250,000 Naira"
+    }
+  ]
+}

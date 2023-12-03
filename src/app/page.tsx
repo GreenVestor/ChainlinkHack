@@ -2,6 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import arrowDown from "../../public/arrowDown.png";
 import tree from "../../public/tree.jpg";
+import solar from "../../public/homePosts/solar.jpg";
+import greentech from "../../public/homePosts/greentech.jpg";
 
 const Home = () => {
   return (
@@ -34,18 +36,76 @@ const Home = () => {
                 </Link>
               </p>
               <Image
-                className="w-3/6 h-3/6 container mx-auto w-full mr-4"
+                className="max-w-md max-h-md container mx-auto w-full mr-4"
                 src={tree}
                 alt=""
               />
             </div>
-            <div className="pb-4">
-                <p className="font-bold max-w-xl text-2xl px-8 mb-4">
-                  Borrow capital or invest in sustainable projects to drive
-                  positive change!
-                </p>
+            <div className="pb-20 mt-4">
+              <p className="font-bold max-w-xl text-2xl px-8 mb-4">
+                Borrow capital or invest in sustainable projects to drive
+                positive change!
+              </p>
+              <div className="px-8 font-semibold flex flex-row gap-6 text-green-700">
+                <p>Support Impactful Initiatives</p>
+                <p>Earn Sustainable Returns</p>
+                <p>Create a Greener World</p>
               </div>
+            </div>
+            <div className="pb-8 flex flex-row rounded-lg">
+              <Image className="max-w-md max-h-md pl-8" src={solar} alt="" />
+              <div className="bg-green-800 px-8 mr-8 pt-8 text-white">
+                <p className="text-2xl pb-4">Solar Harvest Energy Park</p>
+                <p className="pb-4">
+                  At Solar Harvest Energy Park, we're dedicated to
+                  revolutionizing energy generation and combine climate change
+                  through renewable technologies
+                </p>
+                <p className="pb-4">Total Investment Needed: 250,000 Naira</p>
+                <Link
+                  className="text-black bg-emerald-300 p-1.5 rounded-md"
+                  href="#"
+                >
+                  View Project
+                </Link>
+              </div>
+            </div>
+            <div className="pb-8 flex flex-row rounded-lg">
+              <Image
+                className="max-w-md max-h-md pl-8"
+                src={greentech}
+                alt=""
+              />
+              <div className="bg-green-800 px-8 mr-8 pt-8 text-white">
+                <p className="text-2xl pb-4">
+                  Green Tech Urban Farm Initiative
+                </p>
+                <p className="pb-4">
+                  Our Project is dedicated to creating technologically advanced
+                  vertical farms that produce fresh, nutritious products while
+                  minimizing environmental effects
+                </p>
+                <p className="pb-4">Total Investment Needed: 1,250,000 Naira</p>
+                <Link
+                  className="text-black bg-emerald-300 p-1.5 rounded-md"
+                  href="#"
+                >
+                  View Project
+                </Link>
+              </div>
+            </div>
+            <div className="w-full pb-8">
+              <Link
+                className="bg-green-400 container ml-96 p-2 rounded-lg mb-8"
+                href="/projects"
+              >
+                Explore Projects
+              </Link>
+            </div>
           </div>
+        </div>
+        <div>
+          <p>jbfciwebfc</p>
         </div>
       </div>
     </>
