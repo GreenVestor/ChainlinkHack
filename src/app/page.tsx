@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import arrowDown from "../../public/arrowDown.png";
 import tree from "../../public/tree.jpg";
+import leaf from "../../public/leaf.png";
 import solar from "../../public/homePosts/solar.jpg";
 import greentech from "../../public/homePosts/greentech.jpg";
 
@@ -94,9 +95,9 @@ const Home = () => {
                 </Link>
               </div>
             </div>
-            <div className="w-full pb-8">
+            <div className="w-full pb-12 pt-4 container ml-8 mx-auto">
               <Link
-                className="bg-green-400 container ml-96 p-2 rounded-lg mb-8"
+                className="bg-green-400 container mx-96 p-2 rounded-lg mb-12"
                 href="/projects"
               >
                 Explore Projects
@@ -104,8 +105,62 @@ const Home = () => {
             </div>
           </div>
         </div>
-        <div>
-          <p>jbfciwebfc</p>
+        <div className="bg-slate-100 h-fit w-full py-9">
+          <div className="container mx-auto grid place-items-center mb-8">
+            <div>
+              <Image className="w-16 h-16 ml-44 mb-4" src={leaf} alt="" />
+              <p className="font-semibold text-3xl tracking-wide mb-4 text-emerald-700">
+                Investment and Loan Options
+              </p>
+            </div>
+            <p className="text-justify mx-28">
+              At Greenvestor, we offer a range of imvestment and loan
+              opportunities that empower you to make a meaningful impact on
+              sustainable projects. Whether you're an investor seeking financial
+              growth or a borrower looking to fund your eco-friendly
+              initiatives, we have options tailored to your goals!
+            </p>
+          </div>
+          <div className="container mx-auto bg-white rounded-lg p-8">
+            <p className="text-2xl underline mb-2 tracking-wider">Investment Opportunities</p>
+            <div className="flex flex-row gap-x-10">
+              <p className="text-green-700 text-lg">Impactful Returns</p>
+              <p className="text-green-700 text-lg">Diversification</p>
+              <p className="text-green-700 text-lg">Transparency</p>
+              <p className="pl-10 text-justify">
+                Investing in Sustainable Projects with Greenvestor goes beyond
+                Financial Gains - It's about driving Positive Change and
+                Contributing to a Greener World!
+              </p>
+            </div>
+            <p className="text-2xl underline mb-2 tracking-wider">Loan Funding</p>
+            <div className="flex flex-row gap-x-11 pb-4">
+              <p className="text-green-700 text-lg">Access to Capital</p>
+              <p className="text-green-700 text-lg">Community Support</p>
+              <p className="text-green-700 text-lg">Visibility</p>
+              <p className="pl-24 text-justify">
+                Take the next step towards realizing your eco-friendly project
+                by connecting with Investors who Believe in your Vision!
+              </p>
+            </div>
+            <Link className="grid place-items-center bg-green-400 mx-96 rounded-lg p-2" href="/about">Learn More</Link>
+          </div>
+        </div>
+        <div className="mt-12 container mx-auto pl-8">
+          <p className="uppercase font-light text-3xl">Greenvestor</p>
+          <div className="flex flex-row justify-items-end ml-96 pl-72">
+            <div className="place-items-end flex flex-col">
+              <Link className="mb-3" href="/">Home</Link>                        
+              <Link className="mb-3" href="/about">About</Link>
+              <Link className="mb-3" href="/projects">Projects</Link>
+              <Link className="mb-3" href="/contact">Contact Us</Link>            
+            </div>
+            <div className="place-items-end flex flex-col pl-24 mb-12">
+              <Link className="mb-3" href="/">Privacy Policy</Link>                        
+              <Link className="mb-3" href="/">FAQs</Link>
+              <Link className="mb-3" href="/">Terms of Service</Link>          
+            </div>
+          </div>
         </div>
       </div>
     </>

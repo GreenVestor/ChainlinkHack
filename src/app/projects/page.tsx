@@ -50,6 +50,22 @@ const Projects = () => {
           </div>
         </div>
       </div>
+      <div className="mt-12 container mx-auto pl-8">
+          <p className="uppercase font-light text-3xl">Greenvestor</p>
+          <div className="flex flex-row justify-items-end ml-96 pl-72">
+            <div className="place-items-end flex flex-col">
+              <Link className="mb-3" href="/">Home</Link>                        
+              <Link className="mb-3" href="/about">About</Link>
+              <Link className="mb-3" href="/projects">Projects</Link>
+              <Link className="mb-3" href="/contact">Contact Us</Link>            
+            </div>
+            <div className="place-items-end flex flex-col pl-24 mb-12">
+              <Link className="mb-3" href="/">Privacy Policy</Link>                        
+              <Link className="mb-3" href="/">FAQs</Link>
+              <Link className="mb-3" href="/">Terms of Service</Link>          
+            </div>
+          </div>
+        </div>
     </>
   );
 };
