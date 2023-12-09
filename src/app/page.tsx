@@ -5,10 +5,50 @@ import tree from "../../public/tree.jpg";
 import leaf from "../../public/leaf.png";
 import solar from "../../public/homePosts/solar.jpg";
 import greentech from "../../public/homePosts/greentech.jpg";
+// wallet connect
+import '@rainbow-me/rainbowkit/styles.css';
+import {
+  getDefaultWallets,
+  RainbowKitProvider,
+} from '@rainbow-me/rainbowkit';
+import { configureChains, createConfig, WagmiConfig } from 'wagmi';
+import {
+  mainnet,
+  polygon,
+  optimism,
+  arbitrum,
+  base,
+  zora,
+} from 'wagmi/chains';
+import { alchemyProvider } from 'wagmi/providers/alchemy';
+import { publicProvider } from 'wagmi/providers/public';
+
 
 const Home = () => {
+
+  const { chains, publicClient } = configureChains(
+    [mainnet, polygon, optimism, arbitrum, base, zora],
+    [
+      alchemyProvider({ apiKey: process.env.ALCHEMY_ID }),
+      publicProvider()
+    ]
+  );
+  
+  const { connectors } = getDefaultWallets({
+    appName: 'My RainbowKit App',
+    projectId: 'YOUR_PROJECT_ID',
+    chains
+  });
+  
+  const wagmiConfig = createConfig({
+    autoConnect: true,
+    connectors,
+    publicClient
+  })
+
   return (
-    <>
+    <WagmiConfig config={wagmiConfig}>
+      <RainbowKitProvider chains={chains}>
       <div>
         <div className="w-full h-fit bg-green-800 pb-9">
           <div className="container mx-auto font-bold text-lg text-emerald-300 tracking-wider mb-2 pt-2">
@@ -163,7 +203,8 @@ const Home = () => {
           </div>
         </div>
       </div>
-    </>
+      </RainbowKitProvider>
+    </WagmiConfig>
   );
 };
 
