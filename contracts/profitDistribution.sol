@@ -1,7 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+
 contract ProfitDistribution {
+    using SafeMath for uint256;
+
     mapping(address => uint256) public investments;
     mapping(address => uint256) public profits;
 
@@ -10,17 +15,13 @@ contract ProfitDistribution {
 
     uint256 public constant RATE_OF_RETURN = 10; // 10% fixed rate of return
 
-   // event Investment(address indexed investor, uint256 amount);
+    IERC20 public profitToken; // Use IERC20 for token handling
+
     event ProfitDistributed(address indexed investor, uint256 amount);
 
-    //function invest() external payable {
-    //    require(msg.value > 0, "Investment amount must be greater than zero.");
-//
-    //    investments[msg.sender] += msg.value;
-    //    totalInvestment += msg.value;
-//
-    //    emit Investment(msg.sender, msg.value);
-    //}
+    constructor(address _tokenAddress) {
+        profitToken = IERC20(_tokenAddress);
+    }
 
     function distributeProfits() external {
         require(
@@ -28,25 +29,20 @@ contract ProfitDistribution {
             "No investments available for profit distribution."
         );
 
-        // uint256 totalReturns = (totalInvestment * RATE_OF_RETURN) / 100;
-
         for (uint256 i = 0; i < totalInvestment; i++) {
             address investor = msg.sender;
             uint256 investmentAmount = investments[investor];
             uint256 profit = (investmentAmount * RATE_OF_RETURN) / 100;
 
-            profits[investor] += profit;
-            totalProfits += profit;
+            profits[investor] = profits[investor].add(profit);
+            totalProfits = totalProfits.add(profit);
 
             emit ProfitDistributed(investor, profit);
         }
 
         // Reset investments and total investment after profit distribution
         totalInvestment = 0;
-        for (uint256 i = 0; i < totalInvestment; i++) {
-            address investor = msg.sender;
-            investments[investor] = 0;
-        }
+        investments[msg.sender] = 0;
     }
 
     function withdrawProfits() external {
@@ -54,8 +50,27 @@ contract ProfitDistribution {
 
         uint256 amountToWithdraw = profits[msg.sender];
         profits[msg.sender] = 0;
-        totalProfits -= amountToWithdraw;
+        totalProfits = totalProfits.sub(amountToWithdraw);
 
-        payable(msg.sender).transfer(amountToWithdraw);
+        require(profitToken.transfer(msg.sender, amountToWithdraw), "Token transfer failed");
+    }
+
+    function invest(uint256 _amount) external {
+        require(_amount > 0, "Investment amount must be greater than zero.");
+
+        require(profitToken.transferFrom(msg.sender, address(this), _amount), "Token transfer failed");
+
+        investments[msg.sender] = investments[msg.sender].add(_amount);
+        totalInvestment = totalInvestment.add(_amount);
+    }
+
+    // Getter function to check if a user has profits available for withdrawal
+    function hasProfitsToWithdraw(address investor) external view returns (bool) {
+        return profits[investor] > 0;
+    }
+
+    // Getter function to check the available profits of a user
+    function getAvailableProfits(address investor) external view returns (uint256) {
+        return profits[investor];
     }
 }

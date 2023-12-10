@@ -5,7 +5,12 @@ import "./loanContract.sol";
 import "./profitDistribution.sol";
 import "./projectContract.sol";
 
-contract CombinedContract is LoanContract, ProjectContract, ProfitDistribution {
-    constructor() {}
+contract CombinedContract is LoanContract, ProfitDistribution, ProjectContract {
+    constructor(address initialOwner) 
+        LoanContract(initialOwner) 
+        ProfitDistribution(initialOwner) 
+        ProjectContract(initialOwner) 
+    {
+        // Additional initialization logic for the combined contract, if needed
+    }
 }
-

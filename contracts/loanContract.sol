@@ -1,7 +1,12 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.15;
+
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 contract LoanContract {
+    using SafeMath for uint256;
+
     struct Loan {
         address lender;
         address borrower;
@@ -13,7 +18,7 @@ contract LoanContract {
         bool isClosed;
     }
 
-    mapping(address => uint256) public balances;
+    IERC20 public token; // Use IERC20 for token handling
     Loan[] public loans;
 
     event LoanCreated(
@@ -25,6 +30,10 @@ contract LoanContract {
         uint256 repaymentTerm
     );
     event LoanRepaid(address indexed borrower, uint256 repaymentAmount);
+
+    constructor(address _tokenAddress) {
+        token = IERC20(_tokenAddress);
+    }
 
     function createLoan(
         address _borrower,
@@ -65,7 +74,7 @@ contract LoanContract {
         );
     }
 
-    function repayLoan(uint256 _loanIndex) external payable {
+    function repayLoan(uint256 _loanIndex) external {
         require(_loanIndex < loans.length, "Invalid loan index.");
         Loan storage loan = loans[_loanIndex];
         require(
@@ -74,41 +83,34 @@ contract LoanContract {
         );
         require(!loan.isClosed, "Loan is already closed.");
         require(
-            msg.value == loan.repaymentAmount,
-            "Incorrect repayment amount."
+            token.transferFrom(msg.sender, address(this), loan.repaymentAmount),
+            "Token transfer failed"
         );
 
-        loan.remainingAmount -= msg.value;
+        loan.remainingAmount = loan.remainingAmount.sub(loan.repaymentAmount);
         if (loan.remainingAmount == 0) {
             loan.isClosed = true;
         }
 
-        balances[loan.lender] += msg.value;
-
-        emit LoanRepaid(msg.sender, msg.value);
+        emit LoanRepaid(msg.sender, loan.repaymentAmount);
     }
 
     function withdraw() external {
-        require(balances[msg.sender] > 0, "No funds available for withdrawal.");
+        uint256 balance = token.balanceOf(msg.sender);
+        require(balance > 0, "No funds available for withdrawal.");
 
-        uint256 amountToWithdraw = balances[msg.sender];
-        balances[msg.sender] = 0;
-
-        payable(msg.sender).transfer(amountToWithdraw);
+        require(token.transfer(msg.sender, balance), "Token transfer failed");
     }
 
-    // Getter function to retrieve the balance of a specific lender
-    function getLenderBalance(address lender) external view returns (uint256) {
-        return balances[lender];
+    function getLenderBalance() external view returns (uint256) {
+        return token.balanceOf(msg.sender);
     }
 
-    // Getter function to check if a loan is closed
     function isLoanClosed(uint256 loanIndex) external view returns (bool) {
         require(loanIndex < loans.length, "Invalid loan index.");
         return loans[loanIndex].isClosed;
     }
 
-    // Setter function to mark a loan as closed
     function markLoanAsClosed(uint256 loanIndex) external {
         require(loanIndex < loans.length, "Invalid loan index.");
         require(!loans[loanIndex].isClosed, "Loan is already closed.");

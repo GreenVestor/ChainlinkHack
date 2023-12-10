@@ -1,8 +1,12 @@
 // SPDX-License-Identifier: MIT
-
 pragma solidity ^0.8.0;
 
-contract ProjectContract {
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+
+contract ProjectContract is Ownable {
+    using SafeMath for uint256;
+
     struct Project {
         string name;
         address creator;
@@ -17,7 +21,6 @@ contract ProjectContract {
         uint256[] investments;
     }
 
-    address public platformOwner;
     mapping(address => Project) public projects;
     address[] public projectAddresses;
 
@@ -35,14 +38,14 @@ contract ProjectContract {
     event FundsWithdrawn(address indexed project, uint256 amount);
     event ProfitsPaid(address indexed project, uint256 amount);
 
-    constructor() {
-        platformOwner = msg.sender;
+    constructor(address initialOwner) Ownable(initialOwner) {
+        // No additional logic needed for ProjectContract constructor
     }
 
-    modifier onlyPlatformOwner() {
+    modifier onlyPlatformOwnerOrProjectCreator(address _project) {
         require(
-            msg.sender == platformOwner,
-            "Only the platform owner can call this function."
+            _msgSender() == owner() || _msgSender() == projects[_project].creator,
+            "Only the project creator or platform owner can call this function."
         );
         _;
     }
@@ -62,23 +65,23 @@ contract ProjectContract {
             "Capital needed must be greater than zero."
         );
 
-        Project storage project = projects[msg.sender];
+        Project storage project = projects[_msgSender()];
         require(
             bytes(project.name).length == 0,
             "Project already exists for this creator."
         );
 
         project.name = _name;
-        project.creator = msg.sender;
+        project.creator = _msgSender();
         project.description = _description;
         project.capitalNeeded = _capitalNeeded;
         project.isApproved = false;
 
-        projectAddresses.push(msg.sender);
+        projectAddresses.push(_msgSender());
 
-        emit ProjectCreated(msg.sender, _name, _description, _capitalNeeded);
+        emit ProjectCreated(_msgSender(), _name, _description, _capitalNeeded);
 
-        return msg.sender;
+        return _msgSender();
     }
 
     function invest(address _project, uint256 _amount) external payable {
@@ -89,18 +92,13 @@ contract ProjectContract {
         require(_amount > 0, "Investment amount must be greater than zero");
 
         Project storage project = projects[_project];
-        project.investment.investors.push(msg.sender);
+        project.investment.investors.push(_msgSender());
         project.investment.investments.push(_amount);
 
-        emit InvestmentMade(msg.sender, _project, _amount);
+        emit InvestmentMade(_msgSender(), _project, _amount);
     }
 
-    function payoutProfits(address _project) external payable {
-        require(
-            msg.sender == _project || msg.sender == platformOwner,
-            "Only the project creator or platform owner can call this function."
-        );
-
+    function payoutProfits(address _project) external payable onlyPlatformOwnerOrProjectCreator(_project) {
         Project storage project = projects[_project];
         require(project.isApproved, "Project is not approved yet.");
 
@@ -119,13 +117,8 @@ contract ProjectContract {
         }
     }
 
-    function withdrawFunds(address _project) external payable {
+    function withdrawFunds(address _project) external payable onlyPlatformOwnerOrProjectCreator(_project) {
         Project storage project = projects[_project];
-
-        require(
-            msg.sender == project.creator || msg.sender == platformOwner,
-            "Only the project creator or platform owner can call this function."
-        );
 
         uint256 amountToWithdraw = project.capitalNeeded;
 
@@ -134,8 +127,8 @@ contract ProjectContract {
 
         project.capitalNeeded = 0;
 
-        if (msg.sender == platformOwner) {
-            payable(platformOwner).transfer(amountToWithdraw);
+        if (_msgSender() == owner()) {
+            payable(owner()).transfer(amountToWithdraw);
         } else {
             payable(project.creator).transfer(amountToWithdraw);
         }
@@ -143,7 +136,7 @@ contract ProjectContract {
         emit FundsWithdrawn(_project, amountToWithdraw);
     }
 
-    function approveProject(address _project) external onlyPlatformOwner {
+    function approveProject(address _project) external onlyOwner {
         require(
             bytes(projects[_project].name).length > 0,
             "Project does not exist."
