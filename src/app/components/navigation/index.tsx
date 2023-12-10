@@ -2,6 +2,8 @@
 import { useState } from "react";
 import Navbar from "./navbar";
 import Sidebar from "./sidebar";
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);

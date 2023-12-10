@@ -1,8 +1,16 @@
 import React from "react";
 import Link from "next/link";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { useRouter } from 'next/router';
+import { withRouter } from 'next/router';
 
-const Navbar = () => {
+interface NavbarProps {
+  toggle: () => void;
+}
+
+
+// const Navbar = () => {
+  const Navbar: React.FC<NavbarProps> = ({ toggle }) => {
   return (
     <>
       <div className="w-full h-40 bg-green-800 sticky top-0">
@@ -38,11 +46,11 @@ const Navbar = () => {
                 />
               </li>
             </ul>
-            <ul className="text-white pt-1">
+            {/* <ul className="text-white pt-1">
               <li>
-                <ConnectButton/>
               </li>
-            </ul>
+            </ul> */}
+            <ConnectButton/>
           </div>
         </div>
       </div>
